@@ -1,5 +1,5 @@
 /*
-  2 Button Toggle
+  2 LED Toggle
 
   Switches between 2 leds on and off a light emitting diode(LED) connected to digital pins 3 and 4,
   when pressing a pushbutton attached to pin 2.
