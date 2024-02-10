@@ -1,77 +1,38 @@
 /*
-  6 state finite state
+  2 Button Toggle
 
-  Button switches between three LEDs. Reducing light on photocell inverts which lights are turned on.
+  Switches between 2 leds on and off a light emitting diode(LED) connected to digital pins 3 and 4,
+  when pressing a pushbutton attached to pin 2.
+
 */
 
 // constants won't change. They're used here to set pin numbers:
-const int buttonPin = 2;
-const int ledPinRed = 5;
-const int ledPinYellow = 4;
-const int ledPinBlue = 3;
-const int photocellInPin = A0;
+const int buttonPin = 2;  // the number of the pushbutton pin
+const int ledPinYellow = 3;    // the number of the LED pin
+const int ledPinRed = 4;    // the number of the LED pin
 
 // variables will change:
-int prevButtonState = 0;
 int buttonState = 0;  // variable for reading the pushbutton status
-int lightState = 0;
-int sensorValue = 0;
-
-bool LEDINV = true;
+int prevButtonState = 0;
+bool on = false;
 
 void setup() {
   // initialize the LED pin as an output:
-  pinMode(ledPinYellow, OUTPUT);
-  pinMode(ledPinRed, OUTPUT);
-  pinMode(ledPinBlue, OUTPUT);
+  pinMode(ledPin, OUTPUT);
   // initialize the pushbutton pin as an input:
   pinMode(buttonPin, INPUT);
-
-  Serial.begin(9600);
 }
 
 void loop() {
   // read the state of the pushbutton value:
   buttonState = digitalRead(buttonPin);
-  // read serial analog photocell input
-  sensorValue = analogRead(photocellInPin);
 
-  if (sensorValue < 200) {
-    LEDINV = false;
-  }
-  else {
-    LEDINV = true;
-  }
-
-  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if (buttonState == HIGH) {
-    if (prevButtonState == LOW) {
-      switch (lightState) {
-        case 0: // all lights off
-          updateLED(LEDINV,!LEDINV,!LEDINV);
-          lightState++;
-          break;
-        case 1: // red on
-          updateLED(!LEDINV,LEDINV,!LEDINV);
-          lightState++;
-          break;
-        case 2: // yellow on
-          updateLED(!LEDINV,!LEDINV,LEDINV);
-          lightState++;
-          break;
-        default: // blue on
-          updateLED(!LEDINV,!LEDINV,!LEDINV);
-          lightState = 0;
-          break;
-      }
-      Serial.println(sensorValue);
+  if (buttonState == HIGH) { // check if the pushbutton is pressed.
+    if (prevButtonState == LOW) { // if it was previously not pressed
+      on = !on;
+      digitalWrite(ledPin, on); // sace the previous button state
     }
   }
-  prevButtonState = buttonState;
-}
 
-void updateLED(int R,int Y,int B) {
-  digitalWrite(ledPinRed, R);
-  digitalWrite(ledPinYellow, Y);
-  digitalWrite(ledPinBlue, B);
+  prevButtonState = buttonState;
 }
